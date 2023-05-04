@@ -1,4 +1,5 @@
 import os
+import sys
 import shutil
 import concurrent.futures
 from PIL import Image
@@ -71,7 +72,8 @@ def process_images(root_folder, excluded_folders=[], max_size=2000000):
                     if filename.lower().endswith(('.png', '.jpg', '.jpeg')):
                         file_path = os.path.join(foldername, filename)
                         if os.path.getsize(file_path) > max_size:
-                            futures.append(executor.submit(reduce_image_size, file_path, max_size))
+                            futures.append(executor.submit(
+                                reduce_image_size, file_path, max_size))
 
                 for future in concurrent.futures.as_completed(futures):
                     future.result()
@@ -81,4 +83,6 @@ def process_images(root_folder, excluded_folders=[], max_size=2000000):
 
 
 if __name__ == '__main__':
-    process_images('path/to/root/folder', excluded_folders=['excluded_folder_1', 'excluded_folder_2'], max_size=2000000)
+    root_folder = sys.argv[1]
+    process_images(root_folder, max_size=2000000)
+    print(sys.argv)
